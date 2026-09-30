@@ -1,0 +1,153 @@
+{
+  "project_name": "Qwen3.6-27B Stability-HCL with router-selected external capabilities reasoning 250-50-500",
+  "model": {
+    "backend": "chat_completions",
+    "name": "qwen3.6-27b-capabilities-gpu0",
+    "paper_model_name": "Qwen3.6-27B",
+    "base_url": "http://127.0.0.1:8006",
+    "api_key": "EMPTY",
+    "max_new_tokens": 2048,
+    "answer_max_new_tokens": 1024,
+    "temperature": 0.0,
+    "thinking": null,
+    "reasoning_effort": null,
+    "system_prompt": "You are a concise reasoning assistant. Reason internally, use relevant tool evidence when available, follow the requested output schema exactly, and return only the final answer.",
+    "timeout_seconds": 600,
+    "max_retries": 20,
+    "cleanup_output": true,
+    "log_path": "storage/experiments/qwen36_27b_reasoning_hcl_stability_capabilities_250_50_500/llm_calls.txt",
+    "log_prompt_chars": 8000
+  },
+  "execution": {
+    "read_only_workers": 1,
+    "run_train_final": true
+  },
+  "task_interface": {
+    "mode": "llm",
+    "max_new_tokens": 1024,
+    "invalid_output_retries": 1,
+    "retry_max_new_tokens": 1024,
+    "fallback_to_rules_on_invalid": true,
+    "long_context_rule_threshold_chars": 8192
+  },
+  "router": {
+    "route_name": "qwen36_27b_reasoning_hcl_stability_capabilities_router_fixed",
+    "strip_output": true,
+    "use_llm_workflow_selector": true,
+    "use_memory_selector": true,
+    "memory_always_on": false,
+    "use_skill_selector": true,
+    "use_tool_selector": true,
+    "tool_auto_select": true,
+    "use_chat_tool_calls": false,
+    "tool_max_rounds": 0,
+    "tool_strict_schema": false,
+    "tool_js_timeout_seconds": 8.0,
+    "tool_selector_max_new_tokens": 512,
+    "tool_selector_invalid_output_retries": 1,
+    "tool_selector_retry_max_new_tokens": 512,
+    "tool_selector_fallback_to_empty_on_invalid": true,
+    "skill_selector_max_new_tokens": 512,
+    "skill_selector_invalid_output_retries": 1,
+    "skill_selector_retry_max_new_tokens": 512,
+    "skill_selector_fallback_to_empty_on_invalid": true,
+    "memory_selector_max_new_tokens": 512,
+    "memory_selector_invalid_output_retries": 1,
+    "memory_selector_retry_max_new_tokens": 512,
+    "capability_enabled": true,
+    "capability_execution_mode": "router_managed",
+    "capability_service_url": "http://127.0.0.1:8091",
+    "capability_timeout_seconds": 30,
+    "capability_allowed_corpora": [
+      "reasoning_train_corpus"
+    ],
+    "capability_default_corpus_id": "reasoning_train_corpus",
+    "capability_default_top_k": 5,
+    "capability_continue_on_error": true,
+    "capability_force_semantic_search": false,
+    "semantic_search_enabled": true,
+    "cross_modal_match_enabled": true
+  },
+  "optimizer": {
+    "candidate_count": 3,
+    "selection_objective": "stability",
+    "commit_policy": "strict_no_forgetting",
+    "min_accuracy_delta": 0.0,
+    "min_correct_gain": 0,
+    "max_forget_count": 0,
+    "min_format_compliance_rate": 0.85,
+    "recover_reward": 1.0,
+    "forget_penalty": 2.0,
+    "min_anchor_score": 0.0,
+    "min_anchor_net_score": 0.0,
+    "max_anchor_forget_rate": 0.0,
+    "components": [
+      "task_interface_structuring",
+      "router_workflow",
+      "memory_selector",
+      "tool_selector",
+      "router_context"
+    ]
+  },
+  "memory": {
+    "enabled": true,
+    "raw_capacity_per_task": 10,
+    "abstract_capacity_per_task": 2,
+    "anchor_capacity_per_task": 25,
+    "retrieval_top_k": 2,
+    "reset_on_start": false,
+    "abstract_mode": "llm",
+    "abstract_max_new_tokens": 512,
+    "anchor_selection_mode": "llm",
+    "anchor_count_per_batch": 2,
+    "anchor_candidate_limit": 10,
+    "anchor_selection_max_new_tokens": 256,
+    "skill_enabled": true,
+    "skill_mode": "llm",
+    "abstract_prompt_max_chars": 12000
+  },
+  "forgetting_probe": {
+    "enabled": true,
+    "interval_batches": 2,
+    "samples_per_task": 100,
+    "target_correct_ratio": 0.8,
+    "seed": 20260726,
+    "split": "test",
+    "historical_tasks_only": true,
+    "reuse_probe_set": true,
+    "record_predictions": false
+  },
+  "task_stream_path": "configs/taskstream_textual_main_250_50_500.json",
+  "reset_run_on_start": false,
+  "storage_dir": "storage/experiments/qwen36_27b_reasoning_hcl_stability_capabilities_250_50_500",
+  "prediction_cache": {
+    "enabled": true,
+    "path": "storage/experiments/qwen36_27b_reasoning_hcl_stability_capabilities_250_50_500/prediction_cache/read_only_predictions.jsonl"
+  },
+  "checkpoint": {
+    "enabled": true,
+    "path": "storage/experiments/qwen36_27b_reasoning_hcl_stability_capabilities_250_50_500/checkpoint.json",
+    "resume": true
+  },
+  "task_flow": [
+    {
+      "name": "train",
+      "phase": "train",
+      "train_split": "train",
+      "val_split": "validation",
+      "test_split": "test",
+      "continual": true,
+      "batchsize": 25,
+      "train_limit_per_task": 250,
+      "validation_limit_per_task": 50,
+      "test_limit_per_task": 500
+    },
+    {
+      "name": "test",
+      "phase": "test",
+      "test_split": "test",
+      "test_limit_per_task": 500,
+      "group_by_task": true
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "project_name": "DeepSeek Flash reasoning raw zero-shot 4-task 500-test",
+  "task_stream_path": "configs/taskstream_textual_main_250_50_500.json",
+  "split": "test",
+  "limit_per_task": 500,
+  "workers": 4,
+  "resume": true,
+  "output_dir": "storage/experiments/deepseek_flash_reasoning_raw_zero_shot_500",
+  "model": {
+    "backend": "chat_completions",
+    "name": "deepseek-flash",
+    "paper_model_name": "DeepSeek-V4.1-Flash",
+    "base_url": "https://api.deepseek.com",
+    "api_key_env": "DEEPSEEK_API_KEY",
+    "max_new_tokens": 2048,
+    "answer_max_new_tokens": 512,
+    "temperature": 0.0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "cleanup_output": true,
+    "enable_image_input": false,
+    "system_prompt": "You are a concise reasoning assistant. Follow the requested output format and return only the final answer.",
+    "timeout_seconds": 600,
+    "max_retries": 10,
+    "log_path": "storage/experiments/deepseek_flash_reasoning_raw_zero_shot_500/llm_calls.txt",
+    "log_prompt_chars": 12000
+  }
+}

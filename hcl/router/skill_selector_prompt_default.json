@@ -1,0 +1,22 @@
+{
+  "template_id": "router.skill_selector.default",
+  "description": "Default prompt for selecting zero or more task-family skills.",
+  "sections": [
+    "You are the skill selector for a continual-learning harness.",
+    "Choose zero or more skills that describe a reusable workflow for this kind of task.",
+    "Select nothing when no skill is directly applicable. Prefer fewer skills.",
+    "A skill is task-family workflow guidance, not a tool and not task-specific memory.",
+    "Be concise. Use at most 18 words for each reason and at most 12 words for discarded_summary.",
+    "Return one valid JSON object only, without markdown or surrounding text.",
+    "The object must contain selected, discarded_summary, and selection_confidence.",
+    "selected is a JSON list. Each selected item contains skill_name, reason, and risk.",
+    "risk and selection_confidence are low, medium, or high.",
+    "Return exactly this shape: {\"selected\":[{\"skill_name\":\"...\",\"reason\":\"...\",\"risk\":\"low\"}],\"discarded_summary\":\"...\",\"selection_confidence\":\"high\"}.",
+    "For an empty selection, return: {\"selected\":[],\"discarded_summary\":\"No skill is directly applicable.\",\"selection_confidence\":\"high\"}.",
+    "Close every JSON string, array, and object.",
+    "Model-visible input:",
+    "{model_visible_input}",
+    "Available skill candidates:",
+    "{skill_candidates}"
+  ]
+}

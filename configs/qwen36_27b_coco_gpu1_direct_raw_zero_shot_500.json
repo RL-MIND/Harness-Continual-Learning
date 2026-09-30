@@ -1,0 +1,27 @@
+{
+  "project_name": "Qwen3.6-27B COCO corrected multimodal raw zero-shot 500-test",
+  "task_stream_path": "configs/taskstream_multimodal_main_250_50_500.json",
+  "split": "test",
+  "limit_per_task": 500,
+  "resume": true,
+  "output_dir": "storage/experiments/qwen36_27b_coco_gpu1_direct_raw_zero_shot_500",
+  "model": {
+    "backend": "chat_completions",
+    "name": "qwen3.6-27b-coco-ablation-gpu3",
+    "paper_model_name": "Qwen3.6-27B",
+    "base_url": "http://127.0.0.1:8007",
+    "api_key": "EMPTY",
+    "max_new_tokens": 1024,
+    "answer_max_new_tokens": 1024,
+    "temperature": 0.0,
+    "cleanup_output": true,
+    "enable_image_input": true,
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "system_prompt": "You are a concise multimodal reasoning assistant. Inspect the supplied image directly and output only the final answer in the requested format.",
+    "timeout_seconds": 600,
+    "max_retries": 20,
+    "log_prompt_chars": 8000
+  }
+}

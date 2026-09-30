@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hcl-alfworld"
+version = "0.1.0"
+description = "LLM-driven Harness Continual Learning experiments on ALFWorld"
+readme = "README.md"
+requires-python = ">=3.9,<3.13"
+dependencies = [
+  "alfworld==0.4.2",
+  "numpy>=1.24,<2.0",
+  "PyYAML>=6.0",
+  "requests>=2.31",
+  "spacy>=3.7,<3.8",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+llm = [
+  "openai>=1.60,<2",
+  "httpx[socks]>=0.27,<1",
+]
+local = [
+  "torch>=2.1",
+  "transformers>=4.57",
+  "accelerate>=0.30",
+]
+dev = [
+  "pytest>=8,<9",
+  "pytest-cov>=5,<7",
+  "ruff>=0.8,<1",
+]
+
+[project.scripts]
+hcl-alfworld = "hcl_alfworld.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

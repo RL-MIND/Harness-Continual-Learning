@@ -1,0 +1,3 @@
+# The base HCL implementation has no third-party runtime dependencies.
+# Installing this file registers the package and the `hcl` command.
+-e .

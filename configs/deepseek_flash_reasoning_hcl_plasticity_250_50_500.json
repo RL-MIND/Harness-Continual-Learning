@@ -1,0 +1,142 @@
+{
+  "project_name": "DeepSeek-V4.1-Flash reasoning HCL plasticity 250-50-500",
+  "model": {
+    "backend": "chat_completions",
+    "name": "deepseek-flash",
+    "paper_model_name": "DeepSeek-V4.1-Flash",
+    "base_url": "https://api.deepseek.com",
+    "api_key_env": "DEEPSEEK_API_KEY",
+    "max_new_tokens": 1024,
+    "answer_max_new_tokens": 512,
+    "temperature": 0.0,
+    "thinking": {
+      "type": "disabled"
+    },
+    "cleanup_output": true,
+    "json_object_for_structured_phases": false,
+    "system_prompt": "You are a concise reasoning assistant. Follow the requested output schema and return only the final answer.",
+    "timeout_seconds": 600,
+    "max_retries": 10,
+    "log_path": "storage/experiments/deepseek_flash_reasoning_hcl_plasticity_250_50_500/llm_calls.txt",
+    "log_prompt_chars": 12000
+  },
+  "execution": {
+    "read_only_workers": 1,
+    "run_train_final": true
+  },
+  "task_interface": {
+    "mode": "llm",
+    "max_new_tokens": 768,
+    "invalid_output_retries": 1,
+    "retry_max_new_tokens": 768,
+    "fallback_to_rules_on_invalid": true,
+    "long_context_rule_threshold_chars": 8192
+  },
+  "router": {
+    "route_name": "deepseek_flash_reasoning_hcl_plasticity",
+    "strip_output": true,
+    "use_llm_workflow_selector": true,
+    "use_memory_selector": true,
+    "memory_always_on": false,
+    "use_skill_selector": true,
+    "use_tool_selector": false,
+    "tool_auto_select": false,
+    "use_chat_tool_calls": false,
+    "tool_max_rounds": 0,
+    "workflow_selector_max_new_tokens": 512,
+    "memory_selector_max_new_tokens": 256,
+    "memory_selector_invalid_output_retries": 1,
+    "memory_selector_retry_max_new_tokens": 256,
+    "skill_selector_max_new_tokens": 256,
+    "skill_selector_invalid_output_retries": 1,
+    "skill_selector_retry_max_new_tokens": 256,
+    "skill_selector_fallback_to_empty_on_invalid": true,
+    "capability_enabled": false,
+    "capability_execution_mode": "disabled",
+    "capability_service_url": null,
+    "semantic_search_enabled": false,
+    "cross_modal_match_enabled": false
+  },
+  "optimizer": {
+    "candidate_count": 3,
+    "selection_objective": "plasticity",
+    "commit_policy": "plasticity_first",
+    "historical_loss_budget": null,
+    "min_primary_score_delta": 1e-09,
+    "min_correct_gain": 0,
+    "max_forget_count": 0,
+    "min_format_compliance_rate": 1.0,
+    "recover_reward": 1.0,
+    "forget_penalty": 1.5,
+    "min_anchor_score": -5.0,
+    "min_anchor_net_score": -0.1,
+    "max_anchor_forget_rate": 0.2,
+    "components": [
+      "task_interface_structuring",
+      "router_workflow",
+      "memory_selector",
+      "router_context"
+    ]
+  },
+  "memory": {
+    "enabled": true,
+    "raw_capacity_per_task": 10,
+    "abstract_capacity_per_task": 2,
+    "anchor_capacity_per_task": 25,
+    "retrieval_top_k": 2,
+    "reset_on_start": false,
+    "abstract_mode": "llm",
+    "abstract_max_new_tokens": 512,
+    "anchor_selection_mode": "llm",
+    "anchor_count_per_batch": 2,
+    "anchor_candidate_limit": 10,
+    "anchor_selection_max_new_tokens": 256,
+    "skill_enabled": true,
+    "skill_mode": "llm",
+    "abstract_prompt_max_chars": 12000
+  },
+  "forgetting_probe": {
+    "enabled": true,
+    "interval_batches": 2,
+    "samples_per_task": 100,
+    "target_correct_ratio": 0.8,
+    "seed": 20260726,
+    "split": "test",
+    "historical_tasks_only": true,
+    "reuse_probe_set": true,
+    "record_predictions": false
+  },
+  "task_stream_path": "configs/taskstream_textual_main_250_50_500.json",
+  "reset_run_on_start": false,
+  "storage_dir": "storage/experiments/deepseek_flash_reasoning_hcl_plasticity_250_50_500",
+  "prediction_cache": {
+    "enabled": true,
+    "path": "storage/experiments/deepseek_flash_reasoning_hcl_plasticity_250_50_500/prediction_cache/prediction_cache.jsonl"
+  },
+  "checkpoint": {
+    "enabled": true,
+    "path": "storage/experiments/deepseek_flash_reasoning_hcl_plasticity_250_50_500/checkpoint.json",
+    "resume": true
+  },
+  "task_flow": [
+    {
+      "name": "train",
+      "phase": "train",
+      "train_split": "train",
+      "val_split": "validation",
+      "test_split": "test",
+      "continual": true,
+      "batchsize": 25,
+      "train_limit_per_task": 250,
+      "validation_limit_per_task": 50,
+      "test_limit_per_task": 500
+    },
+    {
+      "name": "test",
+      "phase": "test",
+      "test_split": "test",
+      "test_limit_per_task": 500,
+      "group_by_task": true
+    }
+  ]
+}

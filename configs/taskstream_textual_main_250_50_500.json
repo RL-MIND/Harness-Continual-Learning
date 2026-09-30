@@ -1,0 +1,50 @@
+{
+  "description": "Paper-aligned textual stream manifest. The exact sampled JSONL records are external data and are not redistributed.",
+  "paper_order": ["musique", "proofwriter", "gsm8k", "hotpotqa"],
+  "tasks": [
+    {
+      "task_name": "musique",
+      "task_type": "compositional_multi_hop_qa",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets/musique/train.jsonl",
+        "validation": "data/datasets/musique/validation.jsonl",
+        "anchor": "data/datasets/musique/anchor.jsonl",
+        "test": "data/datasets/musique/test.jsonl"
+      }
+    },
+    {
+      "task_name": "proofwriter",
+      "task_type": "logical_reasoning",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets/proofwriter/train.jsonl",
+        "validation": "data/datasets/proofwriter/validation.jsonl",
+        "anchor": "data/datasets/proofwriter/anchor.jsonl",
+        "test": "data/datasets/proofwriter/test.jsonl"
+      }
+    },
+    {
+      "task_name": "gsm8k",
+      "task_type": "math_word_problem",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets/gsm8k/train.jsonl",
+        "validation": "data/datasets/gsm8k/validation.jsonl",
+        "anchor": "data/datasets/gsm8k/anchor.jsonl",
+        "test": "data/datasets/gsm8k/test.jsonl"
+      }
+    },
+    {
+      "task_name": "hotpotqa",
+      "task_type": "knowledge_intensive_multi_hop_qa",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets/hotpotqa/train.jsonl",
+        "validation": "data/datasets/hotpotqa/validation.jsonl",
+        "anchor": "data/datasets/hotpotqa/anchor.jsonl",
+        "test": "data/datasets/hotpotqa/test.jsonl"
+      }
+    }
+  ]
+}

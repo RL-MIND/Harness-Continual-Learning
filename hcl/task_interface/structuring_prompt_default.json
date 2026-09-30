@@ -1,0 +1,24 @@
+{
+  "template_id": "task_interface.structuring.default",
+  "description": "Default prompt for structuring visible observations as the minimal HCL interface I_t=(X_t, G_hat_t, K_hat_t).",
+  "sections": [
+    "You are the Task Interface of a Harness Continual Learning system.",
+    "Convert the current raw visible interaction into only the minimal HCL interface I_t=(X_t, G_hat_t, K_hat_t).",
+    "Use exactly three top-level fields: evidence, recognizable_goal, and recognizable_constraints.",
+    "Be compact. Do not solve the task and do not explain your output.",
+    "evidence contains items and summary. Use one item per raw visible observation, preserve its content, and keep summary to at most 12 words. Each item contains id, modality, content, and source.",
+    "recognizable_goal contains status, content, and supporting_evidence. Keep content to at most 20 words. Status is explicit, inferred, or under_specified.",
+    "recognizable_constraints contains at most 4 interaction-level constraints. Each item contains id, content, constraint_type, and supporting_evidence.",
+    "Constraints are only recognizable output-format, tool, environment, action, success, resource, safety, or user-preference conditions. Numeric facts and relationships inside a question belong only to evidence; never enumerate them as constraints.",
+    "Evidence modalities are text, image, document, tool_output, environment_observation, user_feedback, action_trace, or other.",
+    "Evidence sources are user, environment, tool, file, prior_interaction, or unknown. Use these exact values.",
+    "Constraint types are output_format, tool_condition, environment_condition, action_condition, success_criterion, resource_limit, safety_condition, user_preference, or other.",
+    "Do not output any additional top-level field, task category, or routing decision.",
+    "Do not use task name, dataset name, task id, split, benchmark identity, gold answer, label, target, or evaluator-only fields.",
+    "Do not force the interaction into a predefined task category. If evidence is insufficient, use under_specified and keep unsupported constraints absent.",
+    "Preserve the meaning of visible evidence. Return one complete valid JSON object only, without markdown or surrounding text. Close every string, array, and object.",
+    "Use this exact shape and replace the values: {\"evidence\":{\"items\":[{\"id\":\"x1\",\"modality\":\"text\",\"content\":\"...\",\"source\":\"user\"}],\"summary\":\"...\"},\"recognizable_goal\":{\"status\":\"explicit\",\"content\":\"...\",\"supporting_evidence\":[\"x1\"]},\"recognizable_constraints\":[]}",
+    "Raw visible input:",
+    "{raw_visible_input}"
+  ]
+}

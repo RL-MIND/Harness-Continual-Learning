@@ -1,0 +1,36 @@
+extends: rag.yaml
+output_dir: outputs/rag_local_seed42
+
+execution:
+  evaluation_workers: 1
+
+agent:
+  provider: transformers
+  model: Qwen3.5-4B
+  model_path: 
+  device_map: auto
+  dtype: bfloat16
+  base_url: null
+  api_key_env: null
+  thinking_enabled: false
+  reasoning_effort: null
+  temperature: 0.0
+  max_tokens: 2048
+  component_max_tokens:
+    task_interface: 1024
+    router: 1024
+    action_policy: 768
+
+embedding:
+  provider: transformers
+  model: Qwen3-Embedding-4B
+  model_path: 
+  device_map: auto
+  dtype: bfloat16
+  base_url: null
+  api_key: null
+  dimension: 2560
+  pooling: last_token
+  padding_side: left
+  normalize: true
+  max_tokens: 8192

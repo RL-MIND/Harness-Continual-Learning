@@ -1,0 +1,1 @@
+Drops one stone pickaxe from the bot's inventory onto the ground.

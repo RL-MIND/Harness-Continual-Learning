@@ -1,0 +1,5 @@
+extends: ../hcl.yaml
+output_dir: outputs/ablation_no_memory_seed42
+harness:
+  memory_enabled: false
+

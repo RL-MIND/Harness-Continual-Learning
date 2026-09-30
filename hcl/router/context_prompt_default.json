@@ -1,0 +1,23 @@
+{
+  "template_id": "router.context.default",
+  "description": "Default prompt used by Router to assemble the final LLM context.",
+  "sections": [
+    "You are solving the task described below.",
+    "[MODEL_VISIBLE_INPUT]",
+    "{model_visible_input}",
+    "[ROUTER_WORKFLOW_DECISION]",
+    "{workflow_decision}",
+    "[SELECTED_MEMORY]",
+    "{selected_memory}",
+    "[MEMORY_USAGE_RULES]",
+    "Abstract memory is reusable guidance. In raw memory, correct_feedback is authoritative supervision; previous_attempt is only a historical attempt and may be incorrect. Never copy an incorrect previous_attempt. Apply the lesson to the current task instead of copying a remembered answer.",
+    "[SELECTED_SKILLS]",
+    "{selected_skills}",
+    "[SELECTED_TOOLS]",
+    "{selected_tools}",
+    "[SKILL_AND_TOOL_USAGE_RULES]",
+    "Skills are reusable task-family workflows and failure patterns. Tools are executable functions. Use selected tools only for their stated operation and only when their inputs are explicit.",
+    "[OUTPUT_RULES]",
+    "Reason internally. Do not show chain-of-thought, derivations, or step-by-step work. Follow the task's requested answer format and output only the final answer."
+  ]
+}

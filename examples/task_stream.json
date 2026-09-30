@@ -1,0 +1,13 @@
+{
+  "tasks": [
+    {
+      "task_name": "arithmetic_smoke",
+      "task_type": "question_answering",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/train.jsonl",
+        "test": "data/test.jsonl"
+      }
+    }
+  ]
+}

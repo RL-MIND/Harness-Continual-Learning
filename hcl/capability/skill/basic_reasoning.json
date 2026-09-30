@@ -1,0 +1,25 @@
+{
+  "skill_name": "basic_reasoning",
+  "description": "Follow the visible goal, use only supported evidence, and verify the final output.",
+  "applies_when": [
+    "A visible request requires a direct answer based on supplied information."
+  ],
+  "workflow_template": [
+    "Identify the visible goal and constraints.",
+    "Use only evidence that supports the required conclusion.",
+    "Verify the result and requested output form."
+  ],
+  "tool_plan": [],
+  "prompt_hints": [
+    "Do not add unsupported assumptions."
+  ],
+  "memory_usage": [
+    "Use retrieved memory only when its applicability conditions match."
+  ],
+  "common_failures": [
+    "Using irrelevant evidence or ignoring an explicit constraint."
+  ],
+  "do_not_use_when": [
+    "The visible input does not contain an actionable goal."
+  ]
+}

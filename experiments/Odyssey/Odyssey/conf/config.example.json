@@ -1,0 +1,25 @@
+{
+  "openai_base_url": "http://127.0.0.1:8000/v1",
+  "openai_api_key": "",
+  "openai_model": "your-model-name",
+  "llm_request_timeout": 240,
+  "llm_thinking_enabled": false,
+  "llm_thinking_effort": "",
+  "llm_thinking_budget_tokens": 0,
+  "llm_thinking_style": "none",
+  "llm_extra_body": {},
+  "NODE_SERVER_PORT": 3000,
+  "SENTENT_EMBEDDING_DIR": "",
+  "EMBEDDING": {
+    "provider": "openai_compatible",
+    "base_url": "http://127.0.0.1:8001/v1",
+    "api_key": "",
+    "api_key_env": "ODYSSEY_EMBEDDING_API_KEY",
+    "model": "your-embedding-model",
+    "timeout": 60,
+    "batch_size": 32,
+    "query_instruction": "Given a Minecraft task instruction, retrieve reusable skills whose behavior and preconditions best satisfy the task."
+  },
+  "MC_SERVER_HOST": "127.0.0.1",
+  "MC_SERVER_PORT": "25565"
+}

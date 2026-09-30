@@ -1,0 +1,13 @@
+extends: ../hcl.yaml
+
+# Frozen pass@1 evaluation on the complete official ALFWorld valid_unseen split.
+run_mode: standard_evaluation
+output_dir: outputs/baseline_alfworld_standard_seed42
+
+standard_evaluation:
+  game_source: full_split
+  split: valid_unseen
+  expected_game_count: 134
+
+harness:
+  updates_enabled: false

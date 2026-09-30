@@ -1,0 +1,50 @@
+{
+  "description": "Paper-aligned multimodal stream manifest. Images and the exact sampled JSONL records are external data and are not redistributed.",
+  "paper_order": ["coco_detection", "coco_caption", "refcoco_grounding", "vqav2"],
+  "tasks": [
+    {
+      "task_name": "coco_detection",
+      "task_type": "coco_detection",
+      "modality": ["text", "image"],
+      "splits": {
+        "train": "data/datasets/coco_detection/train.jsonl",
+        "validation": "data/datasets/coco_detection/validation.jsonl",
+        "anchor": "data/datasets/coco_detection/validation.jsonl",
+        "test": "data/datasets/coco_detection/test.jsonl"
+      }
+    },
+    {
+      "task_name": "coco_caption",
+      "task_type": "coco_caption",
+      "modality": ["text", "image"],
+      "splits": {
+        "train": "data/datasets/coco_caption/train.jsonl",
+        "validation": "data/datasets/coco_caption/validation.jsonl",
+        "anchor": "data/datasets/coco_caption/validation.jsonl",
+        "test": "data/datasets/coco_caption/test.jsonl"
+      }
+    },
+    {
+      "task_name": "refcoco_grounding",
+      "task_type": "refcoco_grounding",
+      "modality": ["text", "image"],
+      "splits": {
+        "train": "data/datasets/refcoco_grounding/train.jsonl",
+        "validation": "data/datasets/refcoco_grounding/validation.jsonl",
+        "anchor": "data/datasets/refcoco_grounding/validation.jsonl",
+        "test": "data/datasets/refcoco_grounding/test.jsonl"
+      }
+    },
+    {
+      "task_name": "vqav2",
+      "task_type": "vqa",
+      "modality": ["text", "image"],
+      "splits": {
+        "train": "data/datasets/vqav2/train.jsonl",
+        "validation": "data/datasets/vqav2/validation.jsonl",
+        "anchor": "data/datasets/vqav2/validation.jsonl",
+        "test": "data/datasets/vqav2/test.jsonl"
+      }
+    }
+  ]
+}

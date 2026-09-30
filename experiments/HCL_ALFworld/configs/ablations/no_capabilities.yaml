@@ -1,0 +1,5 @@
+extends: ../hcl.yaml
+output_dir: outputs/ablation_no_capabilities_seed42
+harness:
+  capabilities_enabled: false
+

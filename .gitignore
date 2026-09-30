@@ -1,0 +1,26 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.env.*
+build/
+dist/
+
+# Local credentials and machine-specific configuration
+**/conf/config.json
+
+# Runtime artifacts
+storage/
+outputs/
+reports/
+logs/
+*.log
+llm_calls.txt
+llm_calls.jsonl
+checkpoint*.json
+prediction_cache/
+node_modules/
+.DS_Store

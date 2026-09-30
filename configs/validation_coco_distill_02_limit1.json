@@ -1,0 +1,116 @@
+{
+  "project_name": "coco_distill_02_smoke",
+  "task_stream_path": "configs/taskstream_multimodal_main_250_50_500.json",
+  "storage_dir": "storage/validation/coco_distill_02_limit1",
+  "reset_run_on_start": true,
+  "batchsize": 300,
+  "model": {
+    "backend": "local_transformers",
+    "name": "Qwen3.5-4B",
+    "path": "models/Qwen3.5-4B",
+    "device_map": "cuda:0",
+    "torch_dtype": "bfloat16",
+    "max_new_tokens": 2048,
+    "answer_max_new_tokens": 512,
+    "temperature": 0.0,
+    "enable_thinking": false,
+    "log_path": "storage/validation/coco_distill_02_limit1/student_calls.txt"
+  },
+  "judge_model": {
+    "backend": "chat_completions",
+    "name": "qwen3.6-27b-coco-ablation-gpu3",
+    "max_new_tokens": 2048,
+    "answer_max_new_tokens": 512,
+    "temperature": 0.0,
+    "enable_thinking": false,
+    "log_path": "storage/validation/coco_distill_02_limit1/judge_model_calls.txt",
+    "base_url": "http://127.0.0.1:8017",
+    "api_key": "EMPTY",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "timeout_seconds": 600,
+    "max_retries": 1
+  },
+  "task_interface": {
+    "mode": "auto",
+    "long_context_rule_threshold_chars": 24000,
+    "visible_context_max_chars": 24000,
+    "visible_context_max_items": 12,
+    "max_new_tokens": 640,
+    "retry_max_new_tokens": 1024,
+    "invalid_output_retries": 1,
+    "fallback_to_rules_on_invalid": true
+  },
+  "router": {
+    "use_llm_workflow_selector": true,
+    "use_memory_selector": true,
+    "use_skill_selector": true,
+    "use_tool_selector": true,
+    "capability_enabled": false,
+    "memory_selector_fallback_to_empty_on_invalid": true,
+    "skill_selector_fallback_to_empty_on_invalid": true,
+    "tool_selector_fallback_to_empty_on_invalid": true,
+    "memory_selector_invalid_output_retries": 2,
+    "skill_selector_invalid_output_retries": 2,
+    "tool_selector_invalid_output_retries": 2
+  },
+  "optimizer": {
+    "candidate_count": 1,
+    "components": [
+      "task_interface_structuring",
+      "router_workflow",
+      "router_context"
+    ],
+    "selection_objective": "stability",
+    "min_accuracy_delta": 0.0,
+    "min_correct_gain": 1,
+    "max_forget_count": 0,
+    "min_format_compliance_rate": 0.0,
+    "min_historical_anchor_count": 1,
+    "min_historical_anchors_per_task": 1
+  },
+  "memory": {
+    "enabled": true,
+    "reset_on_start": true,
+    "abstract_mode": "llm",
+    "anchor_selection_mode": "llm",
+    "anchor_count_per_batch": 5,
+    "anchor_capacity_per_task": 15,
+    "skill_mode": "llm"
+  },
+  "prediction_cache": {
+    "enabled": true
+  },
+  "checkpoint": {
+    "enabled": true,
+    "resume": true
+  },
+  "execution": {
+    "read_only_workers": 1,
+    "run_train_final": false
+  },
+  "forgetting_probe": {
+    "enabled": false
+  },
+  "task_flow": [
+    {
+      "name": "train",
+      "phase": "train",
+      "train_split": "train",
+      "val_split": "validation",
+      "test_split": "test",
+      "continual": true,
+      "batchsize": 300,
+      "train_limit_per_task": 1,
+      "validation_limit_per_task": 1,
+      "test_limit_per_task": 1
+    },
+    {
+      "name": "test",
+      "phase": "test",
+      "test_split": "test",
+      "test_limit_per_task": 1
+    }
+  ]
+}

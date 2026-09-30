@@ -1,0 +1,15 @@
+{
+  "backend": "retry",
+  "updates": {
+    "memory": false,
+    "non_memory": false,
+    "skills": false,
+    "prompts": false,
+    "skill_health": false
+  },
+  "execution": {
+    "retry_suppression": false,
+    "condition_on_failure_feedback": false,
+    "use_harness_learned_skills": false
+  }
+}

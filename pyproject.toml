@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hcl-continual-learning"
+version = "0.1.0"
+description = "Research implementation for Harness Continual Learning."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.optional-dependencies]
+local-model = ["Pillow>=10", "torch>=2.1", "transformers>=4.45"]
+coco-eval = ["pycocoevalcap>=1.2", "pycocotools>=2.0.7"]
+test = ["pytest>=8"]
+
+[project.scripts]
+hcl = "hcl.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["hcl*"]
+
+[tool.setuptools.package-data]
+hcl = [
+  "capability/*.md",
+  "capability/*.js",
+  "capability/js_tools/*.js",
+  "capability/js_tools/*.md",
+  "capability/skill/*.json",
+  "memory/*.json",
+  "memory/*.jsonl",
+  "optimizer/*.json",
+  "router/*.json",
+  "task_interface/*.json",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

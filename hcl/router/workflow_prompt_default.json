@@ -1,0 +1,16 @@
+{
+  "template_id": "router.workflow.default",
+  "description": "Default prompt used by Router to instantiate a current-sample workflow from selected skills.",
+  "sections": [
+    "You are the router for a minimal HCL pipeline.",
+    "Create a current-sample workflow. Use selected skills as task-family guidance, not as hidden facts.",
+    "Decide whether the task would benefit from memory retrieval or executable tool use.",
+    "Memory and tools may be unavailable. If unavailable or unnecessary, set the corresponding flag to false.",
+    "Return strict JSON only with this schema:",
+    "{{\"workflow_name\":\"...\",\"steps\":[\"...\"],\"use_memory\":false,\"use_tools\":false,\"memory_query\":\"\",\"tool_needs\":[],\"rationale\":\"...\"}}",
+    "Model-visible input:",
+    "{model_visible_input}",
+    "Selected task-family skills:",
+    "{selected_skills}"
+  ]
+}

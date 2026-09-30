@@ -1,0 +1,82 @@
+seed: 42
+data_dir: data/alfworld
+sequence_manifest: sequences/domain_incremental_full_eval_seed42.json
+output_dir: outputs/hcl_llm_seed42
+
+sequence:
+  task_order: [1, 2, 3, 4, 5, 6]
+  train_episodes_per_task: 10
+  # Use every game of each learned task type; evaluation rows are lower triangular.
+  eval_episodes_per_task: all
+  evaluation_scope: learned_tasks
+  train_split: train
+  eval_split: valid_unseen
+
+environment:
+  max_steps: 50
+  domain_randomization: false
+
+execution:
+  # Training remains serial; only read-only evaluation episodes run concurrently.
+  evaluation_workers: 4
+
+agent:
+  # Both continual-learning and evaluation episodes are controlled by the LLM.
+  policy: openai
+  learning_policy: openai
+  # Shared baseline/main protocol: LLM progress state plus indexed legal actions.
+  interface_protocol_version: deterministic_state_semantic_subgoal_v2
+  episode_progress_enabled: true
+  # Grounded facts come from ALFWorld responses; the LLM only judges subgoals.
+  hard_loop_protection_enabled: true
+  # Block the third stalled attempt or repeated transition without new progress.
+  hard_loop_repeat_limit: 2
+  # Cycle evidence expires outside this recent non-progress transition window.
+  hard_loop_window: 8
+  model: deepseek-v4-flash
+  base_url: https://api.deepseek.com
+  api_key_env: DEEPSEEK_API_KEY
+  json_mode: true
+  # DeepSeek V4 supports high/max. Thinking mode ignores temperature.
+  thinking_enabled: true
+  reasoning_effort: high
+  # JSON parsing retries and invalid-action retries are tracked separately.
+  max_retries: 2
+  action_retries: 2
+  # The current episode has at most 50 steps, so this exposes its full trajectory.
+  episode_history_max_steps: 50
+  # Bound stalled network requests separately from structured JSON retries.
+  request_timeout_seconds: 90
+  # Retry transient 408/409/429/5xx, timeout, and connection failures.
+  transport_max_retries: 8
+  transport_retry_base_seconds: 1
+  transport_retry_max_seconds: 60
+  transport_retry_jitter: 0.25
+  # Optional per-component overrides: task_interface/router/action_policy/optimizer/evaluator.
+  component_models: {}
+  component_thinking_enabled: {}
+  component_reasoning_efforts: {}
+
+harness:
+  updates_enabled: true
+  top_k_memory: 5
+  top_k_strategies: 3
+  candidate_pool_size: 20
+  raw_memory_capacity: 500
+  anchors_per_task: 5
+  min_current_score: 1.0
+  max_anchor_regression: 0.0
+  gate_enabled: true
+  # plasticity: retain grounded evidence and gate semantic operations independently.
+  # stability: preserve the original whole-candidate gate behavior.
+  gate_mode: plasticity
+  memory_enabled: true
+  # Retain raw trajectories for learning and audit, but route only abstract strategies.
+  raw_memory_retrieval_enabled: false
+  strategy_retrieval_enabled: true
+  capabilities_enabled: true
+  capability_learning_enabled: true
+  max_capability_operations: 3
+  provisional_min_positive_evidence: 2
+  validated_min_positive_evidence: 3
+  validated_min_success_rate: 0.67

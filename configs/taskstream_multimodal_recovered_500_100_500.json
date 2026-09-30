@@ -1,0 +1,55 @@
+{
+  "stream_name": "multimodal_hcl_stream",
+  "description": "Recovered four-task multimodal 500/100/500 split manifest. Dataset records and images are external.",
+  "paper_order": ["coco_detection", "coco_caption", "refcoco_grounding", "vqav2"],
+  "tasks": [
+    {
+      "task_name": "coco_detection",
+      "task_type": "coco_detection",
+      "modality": ["image", "text"],
+      "interactions": 1,
+      "splits": {
+        "train": "data/datasets_multimodal_500_100_500/coco_detection/train.json",
+        "validation": "data/datasets_multimodal_500_100_500/coco_detection/validation.json",
+        "anchor": "data/datasets_multimodal_500_100_500/coco_detection/validation.json",
+        "test": "data/datasets_multimodal_500_100_500/coco_detection/test.json"
+      }
+    },
+    {
+      "task_name": "coco_caption",
+      "task_type": "coco_caption",
+      "modality": ["image", "text"],
+      "interactions": 1,
+      "splits": {
+        "train": "data/datasets_multimodal_500_100_500/coco_caption/train.json",
+        "validation": "data/datasets_multimodal_500_100_500/coco_caption/validation.json",
+        "anchor": "data/datasets_multimodal_500_100_500/coco_caption/validation.json",
+        "test": "data/datasets_multimodal_500_100_500/coco_caption/test.json"
+      }
+    },
+    {
+      "task_name": "refcoco_grounding",
+      "task_type": "refcoco_grounding",
+      "modality": ["image", "text"],
+      "interactions": 1,
+      "splits": {
+        "train": "data/datasets_multimodal_500_100_500/refcoco_grounding/train.json",
+        "validation": "data/datasets_multimodal_500_100_500/refcoco_grounding/validation.json",
+        "anchor": "data/datasets_multimodal_500_100_500/refcoco_grounding/validation.json",
+        "test": "data/datasets_multimodal_500_100_500/refcoco_grounding/test.json"
+      }
+    },
+    {
+      "task_name": "vqav2",
+      "task_type": "vqa",
+      "modality": ["image", "text"],
+      "interactions": 1,
+      "splits": {
+        "train": "data/datasets_multimodal_500_100_500/vqav2/train.json",
+        "validation": "data/datasets_multimodal_500_100_500/vqav2/validation.json",
+        "anchor": "data/datasets_multimodal_500_100_500/vqav2/validation.json",
+        "test": "data/datasets_multimodal_500_100_500/vqav2/test.json"
+      }
+    }
+  ]
+}

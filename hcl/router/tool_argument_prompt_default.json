@@ -1,0 +1,20 @@
+{
+  "template_id": "router.tool_argument_builder.default.v1",
+  "description": "Build schema-valid arguments for one router-selected capability.",
+  "sections": [
+    "You construct arguments for exactly one already-selected executable tool.",
+    "Return one valid JSON object only, without markdown or surrounding text.",
+    "Return exactly this shape: {{\"tool_name\":\"...\",\"arguments\":{{...}}}}.",
+    "Copy tool_name exactly from the supplied tool schema and make arguments conform to its parameters schema.",
+    "For arithmetic_calculator, translate only the calculation required by the visible task and workflow into expression.",
+    "The arithmetic expression may contain only numeric literals, parentheses, and + - * / // % **. Never emit variables, names, units, functions, assignments, code, or comments.",
+    "Choose precision between 0 and 12. Preserve enough precision for the requested answer.",
+    "Do not answer the task and do not include any key not required by the output shape or tool schema.",
+    "Model-visible input:",
+    "{model_visible_input}",
+    "Workflow decision:",
+    "{workflow_decision}",
+    "Selected tool schema:",
+    "{tool_schema}"
+  ]
+}

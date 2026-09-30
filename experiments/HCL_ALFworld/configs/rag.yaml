@@ -1,0 +1,27 @@
+extends: hcl.yaml
+
+# Fair-comparison standard RAG baseline. The shared Task Interface, episode
+# dialogue, Action Policy, legal-action selection, ALFWorld stream, and
+# evaluation protocol are unchanged; only external experience memory changes.
+continual_method: rag
+output_dir: outputs/rag_llm_seed42
+
+# Embeddings support semantic retrieval.
+embedding:
+  provider: openai
+  model: Qwen3-Embedding-4B
+  base_url: http://127.0.0.1:8007/v1
+  api_key: EMPTY
+  # Native output dimension validation only; not sent to the endpoint.
+  dimension: 2560
+  max_text_length: 4096
+  request_timeout_seconds: 90
+  transport_max_retries: 3
+
+rag:
+  updates_enabled: true
+  top_k: 3
+  # Standard RAG always returns the available top-k experiences. Set a numeric
+  # value only if an explicit minimum-similarity filter is required.
+  similarity_threshold: null
+  memory_capacity: 500

@@ -1,0 +1,50 @@
+{
+  "description": "Paper-aligned independent textual budget-sweep stream. Exact split files are external; their provenance and fingerprints are documented in data/README.md.",
+  "paper_order": ["musique", "proofwriter", "gsm8k", "hotpotqa"],
+  "tasks": [
+    {
+      "task_name": "musique",
+      "task_type": "compositional_multi_hop_qa",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets_budget_300_80_80_600/musique/train.jsonl",
+        "validation": "data/datasets_budget_300_80_80_600/musique/validation.jsonl",
+        "anchor": "data/datasets_budget_300_80_80_600/musique/anchor.jsonl",
+        "test": "data/datasets_budget_300_80_80_600/musique/test.jsonl"
+      }
+    },
+    {
+      "task_name": "proofwriter",
+      "task_type": "logical_reasoning",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets_budget_300_80_80_600/proofwriter/train.jsonl",
+        "validation": "data/datasets_budget_300_80_80_600/proofwriter/validation.jsonl",
+        "anchor": "data/datasets_budget_300_80_80_600/proofwriter/anchor.jsonl",
+        "test": "data/datasets_budget_300_80_80_600/proofwriter/test.jsonl"
+      }
+    },
+    {
+      "task_name": "gsm8k",
+      "task_type": "math_word_problem",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets_budget_300_80_80_600/gsm8k/train.jsonl",
+        "validation": "data/datasets_budget_300_80_80_600/gsm8k/validation.jsonl",
+        "anchor": "data/datasets_budget_300_80_80_600/gsm8k/anchor.jsonl",
+        "test": "data/datasets_budget_300_80_80_600/gsm8k/test.jsonl"
+      }
+    },
+    {
+      "task_name": "hotpotqa",
+      "task_type": "knowledge_intensive_multi_hop_qa",
+      "modality": ["text"],
+      "splits": {
+        "train": "data/datasets_budget_300_80_80_600/hotpotqa/train.jsonl",
+        "validation": "data/datasets_budget_300_80_80_600/hotpotqa/validation.jsonl",
+        "anchor": "data/datasets_budget_300_80_80_600/hotpotqa/anchor.jsonl",
+        "test": "data/datasets_budget_300_80_80_600/hotpotqa/test.jsonl"
+      }
+    }
+  ]
+}

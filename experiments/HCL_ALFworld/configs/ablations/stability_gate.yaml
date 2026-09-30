@@ -1,0 +1,6 @@
+extends: ../hcl_abstract_only.yaml
+output_dir: outputs/hcl_abstract_only_stability_llm_seed42
+
+harness:
+  # Reproduce the original whole-candidate gate used by completed historical runs.
+  gate_mode: stability

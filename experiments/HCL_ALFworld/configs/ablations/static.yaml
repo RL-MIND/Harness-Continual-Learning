@@ -1,0 +1,16 @@
+extends: ../hcl.yaml
+
+# Frozen pass@1 baseline on the complete official valid_unseen split.
+run_mode: standard_evaluation
+output_dir: outputs/ablation_static_llm_seed42
+
+standard_evaluation:
+  game_source: full_split
+  split: valid_unseen
+  expected_game_count: 134
+
+harness:
+  updates_enabled: false
+  # The frozen baseline evaluates the base action model without learned or
+  # environment-grounded capability descriptions in its prompt.
+  capabilities_enabled: false
