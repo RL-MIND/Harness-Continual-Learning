@@ -1,7 +1,4 @@
-<h1 align="center">
-  <img src="docs/assets/logo.png" alt="HCL logo" height="48" align="absmiddle">
-  Harness Continual Learning
-</h1>
+<h1 align="center">Harness Continual Learning</h1>
 
 <p align="center"><strong>Continual Adaptation Beyond Model Parameters</strong></p>
 
