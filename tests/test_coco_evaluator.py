@@ -33,7 +33,7 @@ class CocoEvaluatorRegressionTest(unittest.TestCase):
         }
 
     @unittest.skipUnless(importlib.util.find_spec("pycocotools"), "pycocotools is optional")
-    def test_detection_uses_micro_f1_and_also_reports_coco_ap(self) -> None:
+    def test_detection_uses_coco_ap_and_also_reports_micro_f1(self) -> None:
         example = self._example(
             "det-1",
             "coco_detection",
@@ -57,8 +57,8 @@ class CocoEvaluatorRegressionTest(unittest.TestCase):
         self.assertAlmostEqual(metrics["detection_micro_precision_iou50"], 0.5)
         self.assertAlmostEqual(metrics["detection_micro_recall_iou50"], 1.0)
         self.assertAlmostEqual(metrics["detection_micro_f1_iou50"], 2.0 / 3.0)
-        self.assertEqual(metrics["primary_metric_name"], "detection_micro_f1_iou50")
-        self.assertAlmostEqual(metrics["primary_score"], 2.0 / 3.0)
+        self.assertEqual(metrics["primary_metric_name"], "detection_coco_ap")
+        self.assertAlmostEqual(metrics["primary_score"], 0.5)
 
     def test_grounding_converts_qwen_coordinates_and_reports_mean_iou(self) -> None:
         example = self._example(
@@ -170,6 +170,43 @@ class CocoEvaluatorRegressionTest(unittest.TestCase):
         self.assertEqual(train_signature["evaluation_schema_version"], version)
         self.assertEqual(test_signature["evaluation_schema_version"], version)
         self.assertEqual(continual_signature["evaluation_schema_version"], version)
+
+    def test_caption_reporting_uses_fixed_four_metrics_and_anchor_uses_cider(self) -> None:
+        example = self._example("cap", "coco_caption", "a red bus")
+        per_metric = {
+            name: {"cap": score}
+            for name, score in (
+                ("Bleu_4", 0.2), ("METEOR", 0.4), ("ROUGE_L", 0.6),
+                ("CIDEr", 1.2), ("SPICE", 0.0),
+            )
+        }
+        with patch.object(self.evaluator_module, "_ptb_tokenize", side_effect=lambda value: value), patch.object(
+            self.evaluator_module, "_compute_coco_caption_metrics", return_value=(per_metric, {}),
+        ):
+            metrics = self.evaluator_module.ExactMatchEvaluator().evaluate(
+                [example], [{"task_id": "cap", "answer": "a red bus"}]
+            )["metrics"]
+        self.assertAlmostEqual(metrics["primary_score"], 0.55)
+        self.assertEqual(metrics["mean_example_score"], 1.0)
+        self.assertEqual(metrics["correct"], 1)
+
+    def test_caption_dependency_error_cannot_silently_report_token_f1(self) -> None:
+        example = self._example("cap", "coco_caption", "a red bus")
+        with patch.object(self.evaluator_module, "_ptb_tokenize", side_effect=ImportError("scorer missing")):
+            with self.assertRaisesRegex(RuntimeError, "Paper caption evaluation requires"):
+                self.evaluator_module.ExactMatchEvaluator().evaluate(
+                    [example], [{"task_id": "cap", "answer": "a red bus"}]
+                )
+
+    def test_vqa_reporting_consensus_is_distinct_from_anchor_success(self) -> None:
+        example = self._example("vqa", "vqa", "red")
+        example["metadata"]["answers"] = ["red", "red", "blue"]
+        metrics = self.evaluator_module.ExactMatchEvaluator().evaluate(
+            [example], [{"task_id": "vqa", "answer": "red"}]
+        )["metrics"]
+        self.assertEqual(metrics["primary_metric_name"], "vqa_consensus_accuracy")
+        self.assertAlmostEqual(metrics["primary_score"], 2.0 / 3.0)
+        self.assertEqual(metrics["correct"], 0)
 
     def test_paper_anchor_thresholds_and_schema_validity(self) -> None:
         caption = self._example("cap", "coco_caption", "a red bus")

@@ -8,7 +8,7 @@ from ..json_utils import atomic_write_jsonl
 
 
 class AnchorMemory:
-    """Deduplicated, clustered historical cases for regression validation."""
+    """Historical cases; text deduplication and clustering exclude multimodal inputs."""
 
     def __init__(
         self,
@@ -111,20 +111,28 @@ def _clustered_anchor_selection(
 ) -> list[dict[str, Any]]:
     if capacity <= 0:
         return []
-    exact_unique: dict[str, dict[str, Any]] = {}
-    for item in records:
-        key = _normalized_question(item)
-        if not key:
-            key = f"task_id:{item.get('task_id', '')}"
+    exact_unique: dict[tuple[str, str], dict[str, Any]] = {}
+    for index, item in enumerate(records):
+        # Fixed text templates do not identify a multimodal observation. Keep
+        # every supplied multimodal case without comparing text or file content.
+        if _is_multimodal(item):
+            key = ("multimodal", str(index))
+        else:
+            key = ("text", _normalized_question(item) or f"task_id:{item.get('task_id', '')}")
         previous = exact_unique.get(key)
         if previous is None or _anchor_priority(item) > _anchor_priority(previous):
             exact_unique[key] = item
     unique = list(exact_unique.values())
     clusters: list[list[dict[str, Any]]] = []
     for item in sorted(unique, key=_anchor_priority, reverse=True):
+        if _is_multimodal(item):
+            clusters.append([item])
+            continue
         item_tokens = _question_tokens(item)
         target_cluster: list[dict[str, Any]] | None = None
         for cluster in clusters:
+            if _is_multimodal(cluster[0]):
+                continue
             representative_tokens = _question_tokens(cluster[0])
             if _token_jaccard(item_tokens, representative_tokens) >= similarity_threshold:
                 target_cluster = cluster
@@ -148,6 +156,10 @@ def _clustered_anchor_selection(
         )
         selected.extend(remaining[: capacity - len(selected)])
     return selected[:capacity]
+
+
+def _is_multimodal(item: dict[str, Any]) -> bool:
+    return any(item.get(key) for key in ("image", "image_path", "file", "file_path"))
 
 
 def _anchor_priority(item: dict[str, Any]) -> tuple[int, int, str]:

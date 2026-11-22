@@ -62,7 +62,7 @@ Python 3.10 or later is required.
 
 ```bash
 git clone https://github.com/RL-MIND/Harness-Continual-Learning.git
-cd HCL
+cd Harness-Continual-Learning
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
@@ -95,6 +95,40 @@ python -m unittest discover -s tests -v
 | Open world | `experiments/Odyssey/` | Minecraft/Odyssey curriculum tasks |
 
 Datasets and model checkpoints are not redistributed. Prepare them under `data/` according to [the data layout](data/README.md), or update the project-relative paths in the selected task-stream file.
+
+### Multimodal reproduction defaults
+
+The [multimodal split builder](data/README.md#multimodal-stream) includes the
+recovered task prompts and seed-630 sampling logic, with a generated manifest of
+the selected sample IDs. The exact historical main-run IDs remain unavailable.
+
+Multimodal anchors bypass question deduplication and text-similarity clustering.
+Distinct sample IDs remain separate even when instructions or image paths match;
+re-adding the same sample ID through batch collection updates its existing entry.
+Capacity limits and the gate's minimum historical-anchor requirements still apply.
+
+The evaluator restores the archived submission's Detection primary metric and
+uses these reporting defaults for all methods, including zero-shot:
+
+| Task | Default `primary_metric_name` | Definition |
+| --- | --- | --- |
+| Detection | `detection_coco_ap` | COCO AP averaged over IoU 0.50:0.95, area=all, maxDets=100 |
+| Caption | `caption_composite_score` | Mean of sentence-level BLEU-4, METEOR, ROUGE-L and CIDEr, each clipped to [0,1] |
+| Grounding | `grounding_accuracy_iou50` | Fraction with bounding-box IoU >= 0.5 |
+| VQAv2 | `vqa_consensus_accuracy` | Mean `min(matching reference answers / 3, 1)` after answer normalization |
+
+Read `primary_score` for reporting and multiply by 100 for the tables. Average
+the four task scores equally. `correct` counts the stricter anchor-success
+predicate and is **not** the task reporting score; Detection F1, Grounding mean
+IoU, and individual caption metrics remain diagnostics. Predicted boxes use
+0–1000 xyxy coordinates and are converted to image pixels; references use pixel
+xyxy. Optional SPICE is diagnostic and does not change the caption composite.
+
+Install `.[coco-eval]` and a Java runtime for official caption scoring. Scorer
+failures raise an error instead of substituting token-F1. The evaluation schema
+is versioned so checkpoints from the previous metric default are not reused as
+new results. These changes do not alter `min_format_compliance_rate` or relax
+the historical-retention gate.
 
 ## Quick start
 

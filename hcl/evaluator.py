@@ -14,7 +14,7 @@ from .json_utils import atomic_write_json
 
 
 DEFAULT_EVALUATOR_DIR = Path(__file__).resolve().parent / "evaluator"
-EVALUATION_SCHEMA_VERSION = "task_native_metrics_v4"
+EVALUATION_SCHEMA_VERSION = "task_native_metrics_v5_paper_defaults"
 
 
 class ExactMatchEvaluator:
@@ -516,31 +516,15 @@ def _official_caption_eval_scores(
         tokenized_res = _ptb_tokenize(res)
         per_metric_scores, aggregate = _compute_coco_caption_metrics(tokenized_gts, tokenized_res)
     except Exception as exc:
-        fallback_scores = {
-            task_id: max(
-                (_caption_token_f1(res[task_id][0]["caption"], ref["caption"]) for ref in refs),
-                default=0.0,
-            )
-            for task_id, refs in gts.items()
-        }
-        # Token F1 is useful as a diagnostic only; it is not the paper's
-        # caption-anchor predicate and must not silently admit an anchor.
-        anchor_scores = {task_id: 0.0 for task_id in gts}
-        return anchor_scores, {
-            "caption_eval_error": f"{type(exc).__name__}:{exc}",
-            "caption_metric_source": "fallback_token_f1",
-            "caption_anchor_criterion_available": False,
-            "caption_count": len(gts),
-            "caption_primary_score": (
-                sum(fallback_scores.values()) / len(fallback_scores)
-                if fallback_scores
-                else 0.0
-            ),
-        }
+        raise RuntimeError(
+            "Paper caption evaluation requires working pycocoevalcap and Java. "
+            "Install .[coco-eval] and check the scorer error; token F1 is not "
+            "a substitute for the reporting metric."
+        ) from exc
     primary_scores: dict[str, float] = {}
     for task_id in gts:
         components = []
-        for metric_name in ("Bleu_4", "METEOR", "ROUGE_L", "CIDEr", "SPICE"):
+        for metric_name in ("Bleu_4", "METEOR", "ROUGE_L", "CIDEr"):
             metric_scores = per_metric_scores.get(metric_name)
             if metric_scores is None or task_id not in metric_scores:
                 continue
@@ -555,6 +539,7 @@ def _official_caption_eval_scores(
         "caption_metric_source": "pycocoevalcap",
         "caption_anchor_criterion_available": True,
         "caption_anchor_metric_definition": "sentence_level_cider_at_least_0.5",
+        "caption_reporting_metric_definition": "mean_clipped_Bleu_4_METEOR_ROUGE_L_CIDEr",
         "caption_count": len(gts),
         "caption_primary_score": (
             sum(primary_scores.values()) / len(primary_scores)
@@ -951,8 +936,8 @@ def _task_specific_metrics(
     if len(kinds) == 1:
         kind = next(iter(kinds))
         if kind == "coco_detection":
-            result["primary_metric_name"] = "detection_micro_f1_iou50"
-            result["primary_score"] = result["detection_micro_f1_iou50"]
+            result["primary_metric_name"] = "detection_coco_ap"
+            result["primary_score"] = result["detection_coco_ap"]
         elif kind == "refcoco_grounding":
             result["primary_metric_name"] = "grounding_accuracy_iou50"
             result["primary_score"] = result["grounding_accuracy_iou50"]

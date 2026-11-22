@@ -21,6 +21,64 @@ Prepare disjoint splits according to the paper protocol. The main run configurat
 
 ## Reproducible split builders
 
+### Multimodal stream
+
+The recovered COCO/RefCOCO/VQAv2 builder and task prompts are provided in
+`scripts/build_coco_hcl_tasks.py` and `scripts/coco_hcl_rows.py`. They use only
+the Python standard library. Prepare COCO 2014 images in `train2014/` and
+`val2014/` under the image root, and supply these annotations:
+
+```text
+annotations/
+├── instances_{train,val}2014.json
+├── captions_{train,val}2014.json
+├── v2_OpenEnded_mscoco_{train,val}2014_questions.json
+├── v2_mscoco_{train,val}2014_annotations.json
+└── refcoco/{instances.json,refs(unc).p}
+```
+
+From the repository root, generate a new 250/50/500 stream:
+
+```bash
+python scripts/build_coco_hcl_tasks.py \
+  --instruction-dir /path/to/annotations \
+  --image-root /path/to/coco/images \
+  --output-dir data/coco_hcl_250_50_500 \
+  --train-per-task 250 --validation-per-task 50 --test-per-task 500 \
+  --seed 630
+```
+
+Point `task_stream_path` in the selected run configuration to
+`data/coco_hcl_250_50_500/taskstream_coco_hcl.json`. The generated manifest uses
+relative split paths; image paths are resolved to absolute paths. Use a new
+output directory because existing split files are overwritten. `--download`
+can fetch VQAv2 and RefCOCO annotations; COCO images and detection/caption
+annotations must already be present. Only load trusted RefCOCO pickle files.
+
+Sampling consumes one `random.Random(630)` in Detection, Caption, Grounding,
+VQAv2 order. Detection/Caption/VQAv2 use train2014 for adaptation and val2014
+for evaluation. RefCOCO uses train references for adaptation and pools
+val/testA/testB/test references for validation/test, taking the first expression
+per reference. Each split selects at most one record per image. The recovered
+sampler prefers unblocked images but falls back to the available pool when it
+is too small; missing image files are excluded before sampling.
+
+`split_manifest.json` records the **actual** selected record IDs, image IDs,
+split-file checksums, seed, and within-task image intersections. Check these
+intersections before running an experiment; any overlap is printed as a warning.
+Annotation order/version and available images affect selection. The original
+main-run sample-ID manifest has not been recovered, so this builder does not
+guarantee the exact historical paper split. The recovered sampling and prompt
+logic is retained; CLI defaults are now explicitly 250/50/500 (the archived
+script used 500/100/100), and the manifest is new audit output.
+
+The `anchor` entry in the generated task manifest aliases validation, matching
+the recovered manifest. Main HCL profiles instead collect anchors from selected
+training batches; consult `memory.anchor_selection_mode` and
+`memory.anchor_count_per_batch` in the run configuration.
+
+### Textual stream
+
 The recovered textual-reasoning stream builder is integrated as
 `scripts/build_textual_stream.py`. It preserves the experiment seed and the
 task-specific stratified sampling protocol. The default output is `data/datasets/`:
